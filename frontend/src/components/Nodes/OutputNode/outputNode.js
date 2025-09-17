@@ -1,5 +1,5 @@
 // outputNode.js (refactored via baseNode)
-import { makeNode } from './baseNode';
+import { makeNode } from '../baseNode';
 
 export const OutputNode = makeNode({
   type: 'customOutput',

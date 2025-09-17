@@ -1,5 +1,5 @@
 // inputNode.js (refactored via baseNode)
-import { makeNode } from './baseNode';
+import { makeNode } from '../baseNode';
 
 export const InputNode = makeNode({
   type: 'customInput',

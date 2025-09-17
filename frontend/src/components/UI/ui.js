@@ -7,11 +7,7 @@ import './ui.css';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
 import { useStore } from '../../store/store';
 import { shallow } from 'zustand/shallow';
-import { InputNode } from '../Nodes/inputNode';
-import { LLMNode } from '../Nodes/llmNode';
-import { OutputNode } from '../Nodes/outputNode';
-import { TextNode } from '../Nodes/textNode';
-import { UppercaseNode, ConcatNode, HttpGetNode, DelayNode, VariableNode } from '../Nodes/extraNodes';
+import { InputNode, LLMNode, OutputNode, TextNode, UppercaseNode, ConcatNode, HttpGetNode, DelayNode, VariableNode } from '../Nodes';
 
 import 'reactflow/dist/style.css';
 

@@ -1,5 +1,5 @@
 // textNode.js (refactored via baseNode)
-import { makeNode } from './baseNode';
+import { makeNode } from '../baseNode';
 
 export const TextNode = makeNode({
   type: 'text',

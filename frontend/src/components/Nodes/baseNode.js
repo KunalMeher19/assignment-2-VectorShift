@@ -78,6 +78,12 @@ export function makeNode(config) {
       updateNodeField(nodeId, fieldName, fieldValue);
     };
 
+    const handleRun = () => {
+      // Placeholder: hook into a pipeline run per node if available later
+      // For now this is a no-op visual affordance
+      // console.log('Run node', id);
+    };
+
     return (
       <div className="node-card" style={config.style || {}}>
         {/* Handles (targets) on the left */}
@@ -92,7 +98,10 @@ export function makeNode(config) {
         ))}
 
         {/* Header */}
-        <div className="node-card__header">{config.title || config.type}</div>
+        <div className="node-card__header">
+          <div className="node-card__title">{config.title || config.type}</div>
+          <button className="node-card__run" onClick={handleRun} title="Run node">Run</button>
+        </div>
 
         {/* Fields */}
         {(config.fields || []).map((field) => (

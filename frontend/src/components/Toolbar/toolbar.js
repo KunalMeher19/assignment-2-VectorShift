@@ -1,12 +1,12 @@
 // toolbar.js
 import React from 'react';
-import { DraggableNode } from './draggableNode';
+import { DraggableNode } from '../DraggableNode/draggableNode';
+import './Toolbar.css';
 
 export const PipelineToolbar = () => {
-
     return (
-        <div style={{ padding: '10px' }}>
-            <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+        <div className="pipeline-toolbar">
+            <div className="pipeline-toolbar__group">
                 <DraggableNode type='customInput' label='Input' />
                 <DraggableNode type='llm' label='LLM' />
                 <DraggableNode type='customOutput' label='Output' />

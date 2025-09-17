@@ -1,0 +1,13 @@
+/* Styles specific to PipelineToolbar component. */
+
+.pipeline-toolbar {
+  padding: 10px;
+}
+
+.pipeline-toolbar__group {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+

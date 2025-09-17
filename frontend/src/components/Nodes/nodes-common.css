@@ -1,0 +1,37 @@
+/* Shared styles for custom React Flow nodes */
+
+.node-card {
+	width: 240px;
+	min-height: 100px;
+	border: 1px solid #1C2536;
+	border-radius: 8px;
+	background: #0F172A;
+	color: #E5E7EB;
+	padding: 10px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.node-card__header {
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 8px;
+	color: #93C5FD;
+}
+
+.node-card__field-label {
+	display: block;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-bottom: 4px;
+	color: #CBD5E1;
+}
+
+.node-card__input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 6px 8px;
+	border-radius: 6px;
+	border: 1px solid #334155;
+	background: #111827;
+	color: #E5E7EB;
+}

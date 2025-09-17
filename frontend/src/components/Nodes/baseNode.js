@@ -12,8 +12,8 @@
 
 import React, { useMemo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { useStore } from '../store/store';
-import '../components/Nodes/nodes-common.css';
+import { useStore } from '../../store/store';
+import './nodes-common.css';
 
 function useStoreActions() {
   const updateNodeField = useStore((s) => s.updateNodeField);

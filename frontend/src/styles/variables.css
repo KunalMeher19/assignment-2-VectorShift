@@ -1,0 +1,18 @@
+/* CSS variables for consistent theming (not imported yet) */
+:root {
+  /* Colors */
+  --color-bg: #0F172A;
+  --color-border: #1C2536;
+  --color-text: #E5E7EB;
+  --color-accent: #93C5FD;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+}

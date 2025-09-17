@@ -3,14 +3,15 @@
 // --------------------------------------------------
 
 import { useState, useRef, useCallback } from 'react';
+import './ui.css';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
-import { useStore } from './store';
+import { useStore } from '../../store/store';
 import { shallow } from 'zustand/shallow';
-import { InputNode } from './nodes/inputNode';
-import { LLMNode } from './nodes/llmNode';
-import { OutputNode } from './nodes/outputNode';
-import { TextNode } from './nodes/textNode';
-import { UppercaseNode, ConcatNode, HttpGetNode, DelayNode, VariableNode } from './nodes/extraNodes';
+import { InputNode } from '../Nodes/inputNode';
+import { LLMNode } from '../Nodes/llmNode';
+import { OutputNode } from '../Nodes/outputNode';
+import { TextNode } from '../Nodes/textNode';
+import { UppercaseNode, ConcatNode, HttpGetNode, DelayNode, VariableNode } from '../Nodes/extraNodes';
 
 import 'reactflow/dist/style.css';
 
@@ -94,9 +95,9 @@ export const PipelineUI = () => {
         event.dataTransfer.dropEffect = 'move';
     }, []);
 
-    return (
-        <>
-  <div ref={reactFlowWrapper} style={{width: '100vw', height: '70vh'}}>
+  return (
+    <>
+  <div ref={reactFlowWrapper} className="pipeline-ui__canvas-wrapper">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

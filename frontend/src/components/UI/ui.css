@@ -1,0 +1,6 @@
+/* Styles specific to PipelineUI (ReactFlow canvas and layout). */
+
+.pipeline-ui__canvas-wrapper {
+	width: 100vw;
+	height: 70vh;
+}

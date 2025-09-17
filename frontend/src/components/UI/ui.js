@@ -3,13 +3,14 @@
 // --------------------------------------------------
 
 import { useState, useRef, useCallback } from 'react';
-import './ui.css';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
+import 'reactflow/dist/style.css';
+import './ui.css';
 import { useStore } from '../../store/store';
 import { shallow } from 'zustand/shallow';
 import { InputNode, LLMNode, OutputNode, TextNode, UppercaseNode, ConcatNode, HttpGetNode, DelayNode, VariableNode } from '../Nodes';
 
-import 'reactflow/dist/style.css';
+// reactflow base styles are imported before our overrides above
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
@@ -36,83 +37,96 @@ const selector = (state) => ({
 });
 
 export const PipelineUI = () => {
-    const reactFlowWrapper = useRef(null);
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const {
-      nodes,
-      edges,
-      getNodeID,
-      addNode,
-      onNodesChange,
-      onEdgesChange,
-      onConnect
-    } = useStore(selector, shallow);
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const {
+    nodes,
+    edges,
+    getNodeID,
+    addNode,
+    onNodesChange,
+    onEdgesChange,
+    onConnect
+  } = useStore(selector, shallow);
 
-    const getInitNodeData = (nodeID, type) => {
-      let nodeData = { id: nodeID, nodeType: `${type}` };
-      return nodeData;
-    }
+  const getInitNodeData = (nodeID, type) => {
+    let nodeData = { id: nodeID, nodeType: `${type}` };
+    return nodeData;
+  }
 
-    const onDrop = useCallback(
-        (event) => {
-          event.preventDefault();
-    
-          const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-          if (event?.dataTransfer?.getData('application/reactflow')) {
-            const appData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
-            const type = appData?.nodeType;
-      
-            // check if the dropped element is valid
-            if (typeof type === 'undefined' || !type) {
-              return;
-            }
-      
-            const position = reactFlowInstance.project({
-              x: event.clientX - reactFlowBounds.left,
-              y: event.clientY - reactFlowBounds.top,
-            });
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
 
-            const nodeID = getNodeID(type);
-            const newNode = {
-              id: nodeID,
-              type,
-              position,
-              data: getInitNodeData(nodeID, type),
-            };
-      
-            addNode(newNode);
-          }
-        },
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      if (event?.dataTransfer?.getData('application/reactflow')) {
+        const appData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+        const type = appData?.nodeType;
+
+        // check if the dropped element is valid
+        if (typeof type === 'undefined' || !type) {
+          return;
+        }
+
+        const position = reactFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+
+        const nodeID = getNodeID(type);
+        const newNode = {
+          id: nodeID,
+          type,
+          position,
+          data: getInitNodeData(nodeID, type),
+        };
+
+        addNode(newNode);
+      }
+    },
     [reactFlowInstance, addNode, getNodeID]
-    );
+  );
 
-    const onDragOver = useCallback((event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    }, []);
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
 
   return (
     <>
-  <div ref={reactFlowWrapper} className="pipeline-ui__canvas-wrapper">
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                onInit={setReactFlowInstance}
-                nodeTypes={nodeTypes}
-                proOptions={proOptions}
-                snapGrid={[gridSize, gridSize]}
-                connectionLineType='smoothstep'
-      >
-  <Background variant="dots" color="#e2e8f0" gap={gridSize} />
-                <Controls />
-                <MiniMap />
-            </ReactFlow>
-        </div>
-        </>
-    )
+      <div ref={reactFlowWrapper} className="pipeline-ui__canvas-wrapper">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onInit={setReactFlowInstance}
+          nodeTypes={nodeTypes}
+          proOptions={proOptions}
+          snapGrid={[gridSize, gridSize]}
+          connectionLineType='smoothstep'
+        >
+          <Background
+            id="pipeline-dots"
+            variant="dots"
+            color="#a2a2a2ff" /* slightly darker gray for better contrast */
+            gap={gridSize}
+            size={1.5}
+          />
+          <Controls position="bottom-right" showInteractive={true} />
+          <MiniMap
+            position="bottom-right"
+            pannable
+            zoomable
+            nodeColor={() => '#93c5fd'}
+            nodeStrokeColor={() => '#3b82f6'}
+            style={{ width: 180, height: 120, borderRadius: 12, background: '#ffffff' }}
+          />
+        </ReactFlow>
+      </div>
+    </>
+  )
 }

@@ -3,13 +3,18 @@
 .node-card {
 	width: 280px;
 	min-height: 120px;
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-lg);
-	background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.9));
+	/* border tuned to indigo family to match screenshot */
+	border: 1px solid #c7d2fe; /* indigo-300 */
+	/* slightly more rounded corners as in the reference */
+	border-radius: 16px;
+	/* soft indigo background like the image */
+	background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%); /* indigo-50 -> indigo-100 */
 	color: var(--color-text);
 	padding: var(--space-4) var(--space-4) var(--space-4);
-	box-shadow: var(--shadow-md);
+	box-shadow: 0 4px 12px rgba(2, 6, 23, 0.1);
 	position: relative;
+	/* smooth hover animation */
+	transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
 }
 
 .node-card__header {
@@ -31,7 +36,7 @@
 	padding: 4px 8px;
 	border-radius: 999px;
 	border: 1px solid var(--color-border);
-	background: linear-gradient(180deg, rgba(219,234,254,0.7), rgba(191,219,254,0.5));
+	background: linear-gradient(180deg, rgba(191,219,254,0.8), rgba(147,197,253,0.6));
 	color: var(--color-text);
 }
 .node-card__run:hover { border-color: var(--color-accent-strong); }
@@ -42,6 +47,24 @@
 	margin-top: var(--space-3);
 	margin-bottom: var(--space-2);
 	color: var(--color-muted);
+}
+
+.node-card__desc {
+	font-size: var(--text-xs);
+	color: var(--color-muted);
+	margin-top: -6px;
+	margin-bottom: var(--space-2);
+}
+
+.node-card__field { margin-bottom: var(--space-2); }
+.node-card__field-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.node-card__badge {
+	font-size: 10px;
+	padding: 2px 6px;
+	border-radius: 999px;
+	border: 1px solid var(--color-border);
+	background: rgba(191,219,254,0.6);
+	color: var(--color-accent-strong);
 }
 
 .node-card__input {
@@ -60,6 +83,18 @@
 	box-shadow: 0 0 0 3px rgba(96,165,250,0.2);
 }
 
+/* Custom select appearance to mimic dropdown chip and menu */
+.node-card__select {
+	appearance: none;
+	background-image: url('data:image/svg+xml;utf8,<svg fill="%231d4ed8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.5 7.5l4.5 4.5 4.5-4.5"/></svg>');
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	background-size: 14px 14px;
+}
+
+/* Some browsers allow styling options slightly; keep minimal */
+.node-card__select option { padding: 6px; }
+
 /* React Flow handle tweaks: smaller dots like VectorShift */
 .react-flow__handle {
 	width: 10px;
@@ -67,3 +102,27 @@
 	background: var(--color-accent-strong);
 	border: 2px solid #ffffff;
 }
+
+/* Hover, focus, and selected states to mimic the card lift effect */
+.node-card:hover,
+.react-flow__node:hover .node-card {
+	transform: translateY(-3px);
+	box-shadow: 0 12px 28px rgba(2, 6, 23, 0.14);
+	border: 1px solid #a5b4fc; /* indigo-300/400 */
+}
+
+.node-card:focus-within,
+.react-flow__node:focus-within .node-card {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 24px rgba(2, 6, 23, 0.12), 0 0 0 3px rgba(59,130,246,0.18);
+	border: 1px solid #93c5fd; /* blue-300 ring hint */
+}
+
+/* When a React Flow node is selected, polish the outline */
+.react-flow__node.selected .node-card {
+	box-shadow: 0 14px 32px rgba(2, 6, 23, 0.16), 0 0 0 3px rgba(37,99,235,0.25);
+	border: 1px solid #60a5fa; /* blue-400 */
+}
+
+/* Ensure hovered node stacks above neighbors so the lift isn't clipped */
+.react-flow__node:hover { z-index: 10; }

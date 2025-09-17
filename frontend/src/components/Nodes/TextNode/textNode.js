@@ -5,6 +5,7 @@ export const TextNode = makeNode({
   type: 'text',
   title: 'Text',
   icon: 'https://img.icons8.com/windows/64/text.png',
+  description: 'Create static or templated text values',
   inputs: [],
   outputs: [{ id: 'output' }],
   fields: [

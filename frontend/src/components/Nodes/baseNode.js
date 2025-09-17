@@ -37,7 +37,11 @@ function FieldControl({ id, data, field, onChange }) {
   }
   if (field.type === 'select') {
     return (
-      <select className="node-card__input" value={value} onChange={(e) => onChange(id, field.name, e.target.value)}>
+      <select
+        className="node-card__input node-card__select"
+        value={value}
+        onChange={(e) => onChange(id, field.name, e.target.value)}
+      >
         {(field.options || []).map((opt) => (
           <option key={opt} value={opt}>{opt}</option>
         ))}
@@ -116,10 +120,19 @@ export function makeNode(config) {
           <button className="node-card__run" onClick={handleRun} title="Run node">Run</button>
         </div>
 
+        {config.description ? (
+          <div className="node-card__desc">{config.description}</div>
+        ) : null}
+
         {/* Fields */}
         {(config.fields || []).map((field) => (
-          <div key={field.name}>
-            <label className="node-card__field-label">{field.label || field.name}</label>
+          <div key={field.name} className="node-card__field">
+            <div className="node-card__field-top">
+              <label className="node-card__field-label">{field.label || field.name}</label>
+              {field.type === 'select' ? (
+                <span className="node-card__badge">Dropdown</span>
+              ) : null}
+            </div>
             <FieldControl id={id} data={data} field={field} onChange={onChange} />
           </div>
         ))}

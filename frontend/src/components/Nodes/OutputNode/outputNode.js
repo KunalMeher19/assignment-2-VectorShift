@@ -5,6 +5,7 @@ export const OutputNode = makeNode({
   type: 'customOutput',
   title: 'Output',
   icon: 'https://img.icons8.com/windows/64/export.png',
+  description: 'Expose results as the final output of your flow',
   inputs: [{ id: 'value' }],
   outputs: [],
   fields: [

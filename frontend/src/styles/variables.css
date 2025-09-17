@@ -10,6 +10,7 @@
   --color-border: #e5e7eb;       /* gray-200 */
   --color-accent: #2563eb;       /* blue-600 */
   --color-accent-strong: #1d4ed8;/* blue-700 */
+  --color-node-bg: #dbeafe;      /* blue-100/200 blend for node backgrounds */
   --color-success: #16a34a;      /* green-600 */
   --color-danger: #dc2626;       /* red-600 */
 

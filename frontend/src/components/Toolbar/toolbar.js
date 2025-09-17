@@ -5,8 +5,9 @@ import { SubmitButton } from '../Submit/submit';
 import './Toolbar.css';
 
 
-export const PipelineToolbar = () => {
+export const PipelineToolbar = ({ isOpen = true, onClose = () => { } }) => {
     const [query, setQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('Start');
 
     const iconMap = {
         customInput: 'https://img.icons8.com/windows/64/login-rounded-right.png',
@@ -35,44 +36,56 @@ export const PipelineToolbar = () => {
     const filtered = nodes.filter(n => n.label.toLowerCase().includes(query.toLowerCase()));
 
     return (
-        <div className="vs-toolbar">
+        <div className={`vs-toolbar ${isOpen ? 'vs-toolbar--open' : 'vs-toolbar--closed'}`}>
             <div className="vs-toolbar__body">
                 <div className="vs-toolbar__panel">
-                    <div className="vs-panel__header">
-                        <div className="vs-toolbar__search">
-                            <div className="vs-search-wrap">
-                                <img
-                                  className="vs-search-icon"
-                                  src="https://img.icons8.com/fluency-systems-filled/96/search.png"
-                                  width={18}
-                                  height={18}
-                                  alt=""
-                                  aria-hidden="true"
-                                  draggable={false}
-                                />
-                                <input
-                                    type="search"
-                                    placeholder="Search Nodes"
-                                    value={query}
-                                    onChange={(e) => setQuery(e.target.value)}
-                                    aria-label="Search nodes"
-                                />
+                    <div className="vs-toolbar__top">
+                        <div className="vs-toolbar__row">
+                            <div className="vs-toolbar__left">
+                                <div className="vs-toolbar__search">
+                                    <div className="vs-search-wrap">
+                                        <img
+                                            className="vs-search-icon"
+                                            src="https://img.icons8.com/fluency-systems-filled/96/search.png"
+                                            width={18}
+                                            height={18}
+                                            alt=""
+                                            aria-hidden="true"
+                                            draggable={false}
+                                        />
+                                        <input
+                                            type="search"
+                                            placeholder="Search Nodes"
+                                            value={query}
+                                            onChange={(e) => setQuery(e.target.value)}
+                                            aria-label="Search nodes"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="vs-toolbar__actions">
+                                <SubmitButton />
                             </div>
                         </div>
-                        <span className="vs-panel__sub">Drag to canvas</span>
-                        <div className="vs-toolbar__actions">
-                            <SubmitButton />
-                        </div>
-                    </div>
+                        <div className="vs-toolbar__row vs-toolbar__row--nodes">
+                            <div className="vs-node-cards">
+                                {filtered.map(n => (
+                                    <div key={n.type} className="vs-node-card">
+                                        <DraggableNode type={n.type} label={n.label} icon={iconMap[n.type]} />
+                                    </div>
+                                ))}
+                            </div>
 
-                    <div className="vs-node-cards">
-                        {filtered.map(n => (
-                            <div key={n.type} className="vs-node-card">
-                                <DraggableNode type={n.type} label={n.label} icon={iconMap[n.type]} />
-                            </div>
-                        ))}
+                        </div>
                     </div>
                 </div>
+                <button
+                    className="vs-toolbar__close"
+                    aria-label={isOpen ? 'Close toolbar' : 'Open toolbar'}
+                    onClick={() => onClose()}
+                >
+                    ✕
+                </button>
             </div>
         </div>
     );

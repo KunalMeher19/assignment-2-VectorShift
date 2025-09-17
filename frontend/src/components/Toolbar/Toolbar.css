@@ -1,19 +1,33 @@
 
 /* VectorShift style toolbar */
 .vs-toolbar {
-  padding: 8px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #eef2f7;
+  width: 100%;
+  padding: 10px 18px;
+  background: transparent; /* allow rounded card look to sit on canvas */
+  display: flex;
+  justify-content: start;
+  position: relative;
+  top: -9px;
 }
 
 .vs-toolbar__top {
   display: flex;
-  gap: 16px;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 5px 5px;
+  box-shadow: 0 8px 24px rgba(16,24,40,0.06);
+  border: 1px solid #eef2f7;
+  flex-direction: column; /* rows inside */
 }
 
-.vs-toolbar__search { flex: 1 1 280px; display:flex; align-items:center; }
+.vs-toolbar__row { width: 100%; display:flex; align-items:center; }
+.vs-toolbar__left { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0; }
+
+.vs-toolbar__search { flex: 1 1 380px; display:flex; align-items:center; }
 .vs-search-wrap { position: relative; display:inline-block; }
 .vs-search-icon { position:absolute; left:10px; top:50%; transform: translateY(-50%); opacity:0.6; pointer-events:none; }
 .vs-toolbar__search input {
@@ -29,50 +43,47 @@
 }
 .vs-toolbar__search input::placeholder { color: #94a3b8; }
 
-.vs-toolbar__tabs {
-  display: flex;
-  gap: 6px;
-  margin-left: 18px;
-}
+.vs-toolbar__tabs { display:flex; gap: 14px; }
 .vs-tab {
   background: transparent;
   border: none;
-  padding: 8px 12px;
+  padding: 8px 2px;
   border-radius: 8px;
   color: #475569;
   font-weight: 600;
   cursor: pointer;
+  position: relative;
 }
-.vs-tab.active {
-  background: #ffffff;
-  border: 1px solid #e6eef6;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.04);
-  color: #0f172a;
+.vs-tab.active { color: #3b82f6; }
+.vs-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  background: #3b82f6;
+  border-radius: 1px;
 }
 
-.vs-toolbar__actions { margin-left: auto; }
+.vs-toolbar__actions { margin-left: auto; display:flex; align-items:center; gap: 8px; }
 
 .vs-toolbar__body { padding-top: 14px; }
 .vs-toolbar__panel { max-width: 100%; }
-.vs-panel__header { display:flex; align-items:center; gap:12px; }
+.vs-panel__header { display:flex; align-items:center; gap:12px; padding: 0 8px; }
 .vs-panel__header h4 { margin:0; font-size:16px; color:#0f172a; }
 .vs-panel__sub { color:#94a3b8; font-size:13px; }
 
-.vs-node-cards {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
+.vs-node-cards { display:flex; gap: 12px; flex-wrap: wrap; align-items:center; }
 .vs-node-card {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   background: linear-gradient(180deg,#ffffff,#fbfeff);
-  border: 2px solid #e8e8e8;
+  border: 1px solid #e7eaef;
   border-radius: 10px;
-  width: 80px;
+  width: 90px;
   aspect-ratio: 1;
   box-shadow: 0 4px 10px rgba(2,6,23,0.04);
 }
@@ -85,8 +96,28 @@
 .vs-node-card__title { font-weight:700; color:#0f172a; font-size:14px; }
 .vs-node-card__hint { font-size:12px; color:#94a3b8; }
 
+/* Toolbar open/close animations (apply at all sizes) */
+.vs-toolbar { transition: transform 300ms ease, opacity 200ms ease; transform-origin: top center; }
+.vs-toolbar--open { transform: translateY(0%); opacity: 1; }
+.vs-toolbar--closed { transform: translateY(-110%); opacity: 0; pointer-events: none; }
+
+/* Close button (cross) */
+.vs-toolbar__close {
+  margin-top: 5px;
+  background: #e6eef6;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #475569;
+  padding: 6px;
+  border-radius: 6px;
+}
+.vs-toolbar__close:hover { background: rgba(15,23,42,0.06); }
+
 @media (max-width: 880px) {
-  .vs-toolbar__top { flex-direction: column; align-items: stretch; }
-  .vs-toolbar__tabs { overflow-x:auto; }
+  .vs-toolbar__top { width: calc(100% - 16px); }
+  .vs-toolbar__left { flex-direction: column; align-items: stretch; }
+  .vs-toolbar__tabs { overflow-x: auto; }
 }
 

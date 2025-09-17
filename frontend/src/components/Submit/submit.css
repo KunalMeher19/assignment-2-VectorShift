@@ -8,13 +8,13 @@
 }
 
 .submit__container button[type="submit"] {
-	background: linear-gradient(180deg, #2563eb, #1d4ed8);
-	border-color: #1d4ed8;
+	background: linear-gradient(180deg, #6366f1, #4f46e5);
+	border-color: #6366f1;
 	color: #ffffff;
 	font-weight: 600;
 }
 .submit__container button[type="submit"]:hover {
-	background: linear-gradient(180deg, #2a6af2, #1e50db);
+	background: linear-gradient(180deg, #4f46e5, #1e50db);
 }
 .submit__container .status--ok { color: var(--color-success); }
 .submit__container .status--error { color: var(--color-danger); }

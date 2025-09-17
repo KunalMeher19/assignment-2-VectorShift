@@ -5,6 +5,7 @@ export const LLMNode = makeNode({
   type: 'llm',
   title: 'LLM',
   icon: 'https://img.icons8.com/windows/64/robot-2.png',
+  description: 'Generate responses from a selected provider and model',
   inputs: [{ id: 'system' }, { id: 'prompt' }],
   outputs: [{ id: 'response' }],
   fields: [

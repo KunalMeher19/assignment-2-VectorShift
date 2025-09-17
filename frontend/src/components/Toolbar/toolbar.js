@@ -6,6 +6,10 @@ import './Toolbar.css';
 export const PipelineToolbar = () => {
     return (
         <div className="pipeline-toolbar">
+            <div className="pipeline-toolbar__title">
+                <strong>Nodes</strong>
+                <span>Drag to canvas</span>
+            </div>
             <div className="pipeline-toolbar__group">
                 <DraggableNode type='customInput' label='Input' />
                 <DraggableNode type='llm' label='LLM' />

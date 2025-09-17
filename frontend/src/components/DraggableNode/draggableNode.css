@@ -1,17 +1,1 @@
-/* Styles specific to DraggableNode component. */
-
-.draggable-node {
-	cursor: grab;
-	min-width: 80px;
-	height: 60px;
-	display: flex;
-	align-items: center;
-	border-radius: 8px;
-	background-color: #1C2536;
-	justify-content: center;
-	flex-direction: column;
-}
-
-.draggable-node__label {
-	color: #fff;
-}
+/* Styles specific to DraggableNode component are now centralized in Toolbar.css */

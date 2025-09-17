@@ -2,7 +2,7 @@
 import React from 'react';
 import './draggableNode.css';
 
-export const DraggableNode = ({ type, label }) => {
+export const DraggableNode = ({ type, label, icon }) => {
     const onDragStart = (event, nodeType) => {
       const appData = { nodeType }
       event.target.style.cursor = 'grabbing';
@@ -17,7 +17,20 @@ export const DraggableNode = ({ type, label }) => {
         onDragEnd={(event) => (event.target.style.cursor = 'grab')}
         draggable
       >
-          <span className="draggable-node__label">{label}</span>
+          <div className="draggable-node__content">
+            {icon ? (
+              <img
+                src={icon}
+                alt={`${label} icon`}
+                className="draggable-node__icon"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                width={36}
+                height={36}
+                draggable={false}
+              />
+            ) : null}
+            <span className="draggable-node__label">{label}</span>
+          </div>
       </div>
     );
   };

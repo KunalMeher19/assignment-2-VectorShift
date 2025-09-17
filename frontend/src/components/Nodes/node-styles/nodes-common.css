@@ -19,6 +19,8 @@
 	gap: var(--space-3);
 	margin-bottom: var(--space-3);
 }
+.node-card__header-left { display:flex; align-items:center; gap:8px; }
+.node-card__icon { filter: grayscale(10%); }
 .node-card__title {
 	font-size: var(--text-md);
 	font-weight: 700;

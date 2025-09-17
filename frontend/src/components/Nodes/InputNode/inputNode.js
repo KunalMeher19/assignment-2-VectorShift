@@ -4,6 +4,7 @@ import { makeNode } from '../baseNode';
 export const InputNode = makeNode({
   type: 'customInput',
   title: 'Input',
+  icon: 'https://img.icons8.com/windows/64/login-rounded-right.png',
   inputs: [],
   outputs: [{ id: 'value' }],
   fields: [

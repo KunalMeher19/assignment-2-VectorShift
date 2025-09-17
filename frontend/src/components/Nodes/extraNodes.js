@@ -6,6 +6,7 @@ import { makeNode } from './baseNode';
 export const UppercaseNode = makeNode({
   type: 'uppercase',
   title: 'Uppercase',
+  icon: 'https://img.icons8.com/windows/64/caps-lock-on.png',
   inputs: [{ id: 'input' }],
   outputs: [{ id: 'output' }],
   fields: [
@@ -17,6 +18,7 @@ export const UppercaseNode = makeNode({
 export const ConcatNode = makeNode({
   type: 'concat',
   title: 'Concat',
+  icon: 'https://img.icons8.com/windows/64/plus-math.png',
   inputs: [{ id: 'a' }, { id: 'b' }],
   outputs: [{ id: 'result' }],
   fields: [
@@ -28,6 +30,7 @@ export const ConcatNode = makeNode({
 export const HttpGetNode = makeNode({
   type: 'httpGet',
   title: 'HTTP GET',
+  icon: 'https://img.icons8.com/external-kmg-design-glyph-kmg-design/64/external-transfer-arrows-kmg-design-glyph-kmg-design.png',
   inputs: [],
   outputs: [{ id: 'response' }],
   fields: [
@@ -40,6 +43,7 @@ export const HttpGetNode = makeNode({
 export const DelayNode = makeNode({
   type: 'delay',
   title: 'Delay',
+  icon: 'https://img.icons8.com/windows/64/time.png',
   inputs: [{ id: 'input' }],
   outputs: [{ id: 'output' }],
   fields: [
@@ -51,6 +55,7 @@ export const DelayNode = makeNode({
 export const VariableNode = makeNode({
   type: 'variable',
   title: 'Variable',
+  icon: 'https://img.icons8.com/windows/64/variable.png',
   inputs: [],
   outputs: [{ id: 'value' }],
   fields: [

@@ -99,7 +99,20 @@ export function makeNode(config) {
 
         {/* Header */}
         <div className="node-card__header">
-          <div className="node-card__title">{config.title || config.type}</div>
+          <div className="node-card__header-left">
+            {config.icon ? (
+              <img
+                src={config.icon}
+                alt=""
+                className="node-card__icon"
+                width={18}
+                height={18}
+                draggable={false}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            ) : null}
+            <div className="node-card__title">{config.title || config.type}</div>
+          </div>
           <button className="node-card__run" onClick={handleRun} title="Run node">Run</button>
         </div>
 

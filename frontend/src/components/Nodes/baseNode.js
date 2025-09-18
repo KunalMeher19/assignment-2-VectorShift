@@ -48,10 +48,18 @@ function AutoTextarea({ value, placeholder, onChange }) {
 }
 
 function FieldControl({ id, data, field, onChange, nodeType, isNameUnique }) {
+  // Hooks must be called unconditionally at the top of the component
+  const getNextInputName = useStore((s) => s.getNextInputName);
+  // Allow custom field components when provided in config
+  if (field && field.component) {
+    const Custom = field.component;
+    return (
+      <Custom id={id} data={data} field={field} onChange={onChange} nodeType={nodeType} />
+    );
+  }
   const value = data?.[field.name] ?? field.default ?? '';
   const isInputNameField = nodeType === 'customInput' && field.name === 'inputName';
   const isDuplicate = isInputNameField && value && !isNameUnique(value, id);
-  const getNextInputName = useStore((s) => s.getNextInputName);
   const commonProps = {
     className: `node-card__input${isDuplicate ? ' node-card__input--error' : ''}`,
     value,

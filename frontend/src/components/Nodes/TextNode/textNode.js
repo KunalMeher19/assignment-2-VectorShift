@@ -1,15 +1,18 @@
 // textNode.js (refactored via baseNode)
 import { makeNode } from '../baseNode';
+import TextPicker from './TextPicker';
 import './textNode.css';
 
 // Extract valid JS identifiers inside double curlies: {{ varName }}
-const VAR_REGEX = /\{\{\s*([A-Za-z_$][A-Za-z0-9_$]*)\s*\}\}/g;
+// Allow dot suffix: {{inputName}} or {{inputName.text}} / {{inputName.file}}
+const VAR_REGEX = /\{\{\s*([A-Za-z_$][A-Za-z0-9_$]*)(?:\.[A-Za-z_$][A-Za-z0-9_$]*)?\s*\}\}/g;
 
 function parseVariables(text) {
   if (!text || typeof text !== 'string') return [];
   const vars = new Set();
   let m;
   while ((m = VAR_REGEX.exec(text)) !== null) {
+    // m[1] is the base variable (before dot). Ensure unique base handles
     vars.add(m[1]);
   }
   return Array.from(vars);
@@ -23,7 +26,7 @@ export const TextNode = makeNode({
   inputs: [],
   outputs: [{ id: 'output' }],
   fields: [
-    { name: 'text', label: 'Text', type: 'textarea', default: '{{input}}', placeholder: 'Type text… Use {{variable}} to create inputs' },
+    { name: 'text', label: 'Text', component: TextPicker, default: '{{input}}', placeholder: 'Type text… Use {{variable}} or start with {{ to pick inputs' },
   ],
   // Add dynamic handles for variables referenced in text
   getDynamicInputs: (data) => {

@@ -256,3 +256,53 @@
 .react-flow__node:hover {
 	z-index: 10;
 }
+
+/* Convenience: textarea variant uses the same input styles */
+.node-card__textarea {
+	min-height: 34px;
+}
+
+/* Token chips row inside field */
+.token-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 4px;
+}
+
+.token-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 1px 6px;
+	border-radius: 7px;
+	background: #eef2ff; /* indigo-50/100 */
+	color: #4f46e5; /* indigo-600 */
+	font-size: 10px;
+	border: 1px solid #c7d2fe; /* indigo-300 */
+}
+
+.token-chip__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+			width: 10px;
+			height: 10px;
+	border-radius: 4px;
+	background: #dbeafe;
+	color: #4f46e5;
+	font-weight: 700;
+}
+
+.token-chip__remove {
+	margin-left: 4px;
+	border: none;
+	background: transparent;
+	color: #4f46e5;
+	cursor: pointer;
+		font-size: 10px;
+	line-height: 1;
+}
+.token-chip__remove:hover {
+	color: #4338ca;
+}

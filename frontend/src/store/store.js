@@ -147,14 +147,116 @@ export const useStore = create(
         });
       },
       updateNodeField: (nodeId, fieldName, fieldValue) => {
-        set({
-          nodes: get().nodes.map((node) => {
-            if (node.id === nodeId) {
-              node.data = { ...node.data, [fieldName]: fieldValue };
-            }
+        const state = get();
+        const nodesList = state.nodes || [];
+        const edgesList = state.edges || [];
+        const node = nodesList.find((n) => n.id === nodeId);
 
-            return node;
-          }),
+        // Special handling: if renaming a custom input node's inputName, propagate changes
+        if (node?.type === 'customInput' && fieldName === 'inputName') {
+          const oldName = node?.data?.inputName;
+          const newName = fieldValue;
+          if (typeof oldName === 'string' && typeof newName === 'string' && oldName !== newName) {
+            const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const oldEsc = escapeRegExp(oldName);
+            // Match {{ oldName }} or {{ oldName.suffix }} with optional whitespace inside
+            const re = new RegExp(`\\{\\{\\s*${oldEsc}(\\.[A-Za-z_$][A-Za-z0-9_$]*)?\\s*\\}\\}`,'g');
+            const replaceWith = (_m, suffix) => `{{${newName}${suffix || ''}}}`;
+
+            // Update tokens in other nodes
+            const nextNodes = nodesList.map((n) => {
+              if (n.id === nodeId) {
+                // Update the input node itself with new name
+                return { ...n, data: { ...n.data, [fieldName]: fieldValue } };
+              }
+              if (!n?.data) return n;
+              if (n.type === 'llm') {
+                const sys = n.data.system;
+                const pr = n.data.prompt;
+                const newData = { ...n.data };
+                if (typeof sys === 'string') newData.system = sys.replace(re, replaceWith);
+                if (typeof pr === 'string') newData.prompt = pr.replace(re, replaceWith);
+                if (newData !== n.data) return { ...n, data: newData };
+                return n;
+              }
+              if (n.type === 'text') {
+                const txt = n.data.text;
+                if (typeof txt === 'string') {
+                  const newText = txt.replace(re, replaceWith);
+                  if (newText !== txt) return { ...n, data: { ...n.data, text: newText } };
+                }
+                return n;
+              }
+              return n;
+            });
+
+            // Update edges that target text node dynamic handles with the old base name
+            const nextEdges = edgesList.map((e) => {
+              if (e.source === nodeId && typeof e.targetHandle === 'string') {
+                // targetHandle format for text nodes: `${textNodeId}-${varBase}`
+                const parts = e.targetHandle.split('-');
+                if (parts.length >= 2) {
+                  const varBase = parts.slice(1).join('-'); // in case ids have hyphens
+                  if (varBase === oldName) {
+                    const targetNodeId = e.target;
+                    const newHandle = `${targetNodeId}-${newName}`;
+                    return { ...e, targetHandle: newHandle };
+                  }
+                }
+              }
+              return e;
+            });
+
+            set({ nodes: nextNodes, edges: nextEdges });
+            return;
+          }
+        }
+
+        // Special handling: if changing a custom input node's inputType, update token suffixes
+        if (node?.type === 'customInput' && fieldName === 'inputType') {
+          const inputName = node?.data?.inputName;
+          const newType = fieldValue; // expected 'Text' | 'File'
+          if (typeof inputName === 'string' && (newType === 'Text' || newType === 'File')) {
+            const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const nameEsc = escapeRegExp(inputName);
+            const re = new RegExp(`\\{\\{\\s*${nameEsc}(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)?\\s*\\}\\}`,'g');
+            const suffix = newType === 'File' ? '.file' : '.text';
+            const replaceWith = `{{${inputName}${suffix}}}`;
+
+            const nextNodes = (state.nodes || []).map((n) => {
+              if (n.id === nodeId) {
+                // update the custom input node's own type
+                return { ...n, data: { ...n.data, [fieldName]: fieldValue } };
+              }
+              if (!n?.data) return n;
+              if (n.type === 'llm') {
+                const sys = n.data.system;
+                const pr = n.data.prompt;
+                const newData = { ...n.data };
+                if (typeof sys === 'string') newData.system = sys.replace(re, replaceWith);
+                if (typeof pr === 'string') newData.prompt = pr.replace(re, replaceWith);
+                if (newData !== n.data) return { ...n, data: newData };
+                return n;
+              }
+              if (n.type === 'text') {
+                const txt = n.data.text;
+                if (typeof txt === 'string') {
+                  const newText = txt.replace(re, replaceWith);
+                  if (newText !== txt) return { ...n, data: { ...n.data, text: newText } };
+                }
+                return n;
+              }
+              return n;
+            });
+
+            set({ nodes: nextNodes });
+            return;
+          }
+        }
+
+        // Default behavior: simple field update
+        set({
+          nodes: nodesList.map((n) => (n.id === nodeId ? { ...n, data: { ...n.data, [fieldName]: fieldValue } } : n)),
         });
       },
       clearGraph: () => set({ nodes: [], edges: [] }),

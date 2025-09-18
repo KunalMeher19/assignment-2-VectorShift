@@ -10,7 +10,7 @@
 //   style?: React.CSSProperties
 // }
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import { useStore } from '../../store/store';
 import './node-styles/nodes-common.css';
@@ -22,17 +22,45 @@ function useStoreActions() {
   return { updateNodeField, removeNode };
 }
 
-function FieldControl({ id, data, field, onChange }) {
+function AutoTextarea({ value, placeholder, onChange }) {
+  const ref = useRef(null);
+  const autosize = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  };
+  useEffect(() => {
+    autosize();
+  }, [value]);
+  return (
+    <textarea
+      ref={ref}
+      className={"node-card__input node-card__textarea"}
+      value={value}
+      placeholder={placeholder}
+      rows={1}
+      onInput={autosize}
+      onChange={onChange}
+      style={{ overflow: 'hidden', resize: 'none' }}
+    />
+  );
+}
+
+function FieldControl({ id, data, field, onChange, nodeType, isNameUnique }) {
   const value = data?.[field.name] ?? field.default ?? '';
+  const isInputNameField = nodeType === 'customInput' && field.name === 'inputName';
+  const isDuplicate = isInputNameField && value && !isNameUnique(value, id);
+  const getNextInputName = useStore((s) => s.getNextInputName);
   const commonProps = {
-    className: 'node-card__input',
+    className: `node-card__input${isDuplicate ? ' node-card__input--error' : ''}`,
     value,
     placeholder: field.placeholder,
     onChange: (e) => onChange(id, field.name, e.target.type === 'number' ? Number(e.target.value) : e.target.value)
   };
 
   if (field.type === 'textarea') {
-    return <textarea {...commonProps} rows={3} />;
+    return <AutoTextarea value={value} placeholder={field.placeholder} onChange={commonProps.onChange} />;
   }
   if (field.type === 'number') {
     return <input type="number" {...commonProps} />;
@@ -58,19 +86,45 @@ function FieldControl({ id, data, field, onChange }) {
     );
   }
   // default to text
-  return <input type="text" {...commonProps} />;
+  const handleTextBlur = () => {
+    if (!isInputNameField) return;
+    const trimmed = (value ?? '').toString().trim();
+    if (!trimmed) {
+      const next = getNextInputName();
+      onChange(id, field.name, next);
+    }
+  };
+
+  return (
+    <>
+      <input type="text" {...commonProps} onBlur={handleTextBlur} />
+      {isDuplicate ? (
+        <div className="node-card__error-text">Name already in use</div>
+      ) : null}
+    </>
+  );
 }
 
 export function makeNode(config) {
   const NodeComponent = function GenericNode({ id, data }) {
     const { updateNodeField, removeNode } = useStoreActions();
+    const nodeType = config.type;
+    const isNameUnique = useStore((s) => s.isInputNameUnique);
 
-    // evenly distribute handles
+    // Build inputs: static + dynamic (based on data)
     const inputPositions = useMemo(() => {
-      const inputs = config.inputs || [];
+      const staticInputs = config.inputs || [];
+      const dynamicInputs = typeof config.getDynamicInputs === 'function' ? (config.getDynamicInputs(data) || []) : [];
+      // merge while deduping by id
+      const byId = new Map();
+      [...staticInputs, ...dynamicInputs].forEach((h) => {
+        if (!h || !h.id) return;
+        byId.set(h.id, h);
+      });
+      const inputs = Array.from(byId.values());
       const n = inputs.length || 0;
       return inputs.map((h, i) => ({ ...h, top: `${((i + 1) * 100) / (n + 1)}%` }));
-    }, []);
+    }, [data]);
 
     const outputPositions = useMemo(() => {
       const outputs = config.outputs || [];
@@ -86,8 +140,11 @@ export function makeNode(config) {
       removeNode(id);
     };
 
+    const dynamicStyle = typeof config.computeStyle === 'function' ? (config.computeStyle(data) || {}) : {};
+    const className = ['node-card', config.className].filter(Boolean).join(' ');
+
     return (
-      <div className="node-card" style={config.style || {}}>
+      <div className={className} style={{ ...(config.style || {}), ...dynamicStyle }}>
         {/* Handles (targets) on the left */}
         {inputPositions.map((h) => (
           <Handle
@@ -131,7 +188,7 @@ export function makeNode(config) {
                 <span className="node-card__badge">Dropdown</span>
               ) : null}
             </div>
-            <FieldControl id={id} data={data} field={field} onChange={onChange} />
+            <FieldControl id={id} data={data} field={field} onChange={onChange} nodeType={nodeType} isNameUnique={isNameUnique} />
           </div>
         ))}
 

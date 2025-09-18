@@ -1,1 +1,5 @@
-/* Styles for TextNode (src/nodes/textNode.js). Not imported yet. */
+/* Styles for TextNode */
+.node-card__textarea {
+	line-height: 1.3;
+	min-height: 26px;
+}

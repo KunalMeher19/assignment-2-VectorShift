@@ -9,7 +9,8 @@ export const InputNode = makeNode({
   inputs: [],
   outputs: [{ id: 'value' }],
   fields: [
-    { name: 'inputName', label: 'Name', type: 'text', default: 'input_1' },
+    // default provided by UI via store.getNextInputName on create; keep fallback
+    { name: 'inputName', label: 'Name', type: 'text', placeholder: 'e.g., input_1' },
     { name: 'inputType', label: 'Type', type: 'select', options: ['Text', 'File'], default: 'Text' },
   ],
 });

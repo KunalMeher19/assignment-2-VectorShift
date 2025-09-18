@@ -31,6 +31,7 @@ const selector = (state) => ({
   edges: state.edges,
   getNodeID: state.getNodeID,
   addNode: state.addNode,
+  getNextInputName: state.getNextInputName,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
@@ -44,15 +45,20 @@ export const PipelineUI = () => {
     edges,
     getNodeID,
     addNode,
+    getNextInputName,
     onNodesChange,
     onEdgesChange,
     onConnect
   } = useStore(selector, shallow);
 
-  const getInitNodeData = (nodeID, type) => {
-    let nodeData = { id: nodeID, nodeType: `${type}` };
+  const getInitNodeData = useCallback((nodeID, type) => {
+    const nodeData = { id: nodeID, nodeType: `${type}` };
+    // For Input nodes, set a unique default name using the global counter
+    if (type === 'customInput') {
+      nodeData.inputName = getNextInputName();
+    }
     return nodeData;
-  }
+  }, [getNextInputName]);
 
   const onDrop = useCallback(
     (event) => {
@@ -84,7 +90,7 @@ export const PipelineUI = () => {
         addNode(newNode);
       }
     },
-    [reactFlowInstance, addNode, getNodeID]
+    [reactFlowInstance, addNode, getNodeID, getInitNodeData]
   );
 
   const onDragOver = useCallback((event) => {

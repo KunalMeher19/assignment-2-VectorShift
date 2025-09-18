@@ -9,13 +9,29 @@ import {
     MarkerType,
   } from 'reactflow';
 
-// Persist the graph so it survives reloads
 export const useStore = create(
   persist(
     (set, get) => ({
       nodes: [],
       edges: [],
       nodeIDs: {},
+      // Compute whether a given Input name is unique among customInput nodes (excluding an optional node id)
+      isInputNameUnique: (name, excludeId) => {
+        const nodes = get().nodes || [];
+        return !nodes.some((n) => n?.type === 'customInput' && n?.id !== excludeId && n?.data?.inputName === name);
+      },
+        // Returns the smallest available default name for Input nodes (reuses gaps like input_1 if freed)
+        getNextInputName: () => {
+          const { isInputNameUnique } = get();
+          let i = 1;
+          while (true) {
+            const candidate = `input_${i}`;
+            if (isInputNameUnique(candidate)) {
+              return candidate;
+            }
+            i += 1;
+          }
+      },
       getNodeID: (type) => {
         const newIDs = { ...get().nodeIDs };
         if (newIDs[type] === undefined) {
@@ -54,7 +70,6 @@ export const useStore = create(
         });
       },
       removeNode: (nodeId) => {
-        // Remove the node and any edges connected to it
         set({
           nodes: get().nodes.filter((n) => n.id !== nodeId),
           edges: get().edges.filter((e) => e.source !== nodeId && e.target !== nodeId),
@@ -71,13 +86,11 @@ export const useStore = create(
           }),
         });
       },
-      // Optional helpers to manage persisted state
-      clearGraph: () => set({ nodes: [], edges: [] }),
+  clearGraph: () => set({ nodes: [], edges: [] }),
     }),
     {
       name: 'pipeline-graph-store',
       storage: createJSONStorage(() => localStorage),
-      // only persist what's needed to rebuild the canvas
       partialize: (state) => ({
         nodes: state.nodes,
         edges: state.edges,

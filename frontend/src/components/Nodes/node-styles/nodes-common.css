@@ -136,6 +136,18 @@
 	box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
+/* Error state for invalid inputs */
+.node-card__input--error {
+	border-color: var(--color-danger, #ef4444);
+	color: var(--color-danger, #ef4444);
+}
+
+.node-card__error-text {
+	margin-top: 4px;
+	font-size: 10px;
+	color: var(--color-danger, #ef4444);
+}
+
 /* Custom select appearance to mimic dropdown chip and menu */
 /* Themed dropdown (native select) */
 .node-card__select {

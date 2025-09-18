@@ -1,4 +1,3 @@
-// submit.js
 import './submit.css';
 import React from 'react';
 import { useStore } from '../../store/store';
@@ -26,7 +25,7 @@ export const SubmitButton = () => {
     };
 
     const handleClick = async (e) => {
-        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        if (e?.preventDefault) e.preventDefault();
         if (submitting) return;
         setSubmitting(true);
 
@@ -56,7 +55,7 @@ export const SubmitButton = () => {
                     success = true;
                     break;
                 }
-            } catch (_) {}
+            } catch (_) { /* noop */ }
 
             // 2) Try POST with form-encoded body (fallback)
             try {
@@ -78,7 +77,7 @@ export const SubmitButton = () => {
                     success = true;
                     break;
                 }
-            } catch (_) {}
+            } catch (_) { /* noop */ }
 
             // 3) Fallback: GET with query string
             try {
@@ -97,7 +96,7 @@ export const SubmitButton = () => {
                     success = true;
                     break;
                 }
-            } catch (_) {}
+            } catch (_) { /* noop */ }
         }
 
         if (!success) {
@@ -116,4 +115,4 @@ export const SubmitButton = () => {
             ) : null}
         </div>
     );
-}
+};

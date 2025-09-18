@@ -1,0 +1,7 @@
+{
+  "name": "vectorshift-assignment-root",
+  "private": true,
+  "scripts": {
+    "format": "npm -w frontend run format || (cd frontend && npx prettier --write \"src/**/*.{js,jsx,css}\")"
+  }
+}

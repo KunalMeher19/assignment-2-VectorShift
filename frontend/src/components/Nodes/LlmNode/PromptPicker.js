@@ -35,6 +35,35 @@ export default function PromptPicker({ id, data, field, onChange }) {
         );
     }, [nodes, connectedSourceIds]);
 
+    const availableTextNodes = useMemo(() => {
+        const alreadySources = new Set(
+            (edges || [])
+                .filter((e) => e?.target === id && e?.targetHandle === `${id}-prompt`)
+                .map((e) => e.source)
+        );
+        return (nodes || []).filter((n) => n.type === 'text' && !alreadySources.has(n.id));
+    }, [nodes, edges, id]);
+
+    // Whether there is any inbound connection to the LLM prompt handle
+    const hasPromptConnection = useMemo(() => {
+        return (edges || []).some((e) => e?.target === id && e?.targetHandle === `${id}-prompt`);
+    }, [edges, id]);
+
+    // Gather currently connected Text nodes for chip display and removal
+    const connectedTextNodes = useMemo(() => {
+        const inEdges = (edges || []).filter(
+            (e) => e?.target === id && e?.targetHandle === `${id}-prompt`
+        );
+        const list = [];
+        for (const e of inEdges) {
+            const src = (nodes || []).find((n) => n.id === e.source);
+            if (src && src.type === 'text') list.push({ node: src, edge: e });
+        }
+        return list;
+    }, [edges, id, nodes]);
+
+    // We allow connecting Text nodes to LLM prompt, but do not alter the prompt UI/read-only state.
+
     // Extract tokens like {{name.type}}
     const tokens = useMemo(() => {
         const result = [];
@@ -163,6 +192,22 @@ export default function PromptPicker({ id, data, field, onChange }) {
         }, 0);
     };
 
+    // Remove the just-typed '{{' completely (used when selecting a Text node)
+    const removeDoubleBrace = () => {
+        const start = triggerStart ?? (caret - 2);
+        const clampedStart = Math.max(0, start);
+        const before = String(inputVal).slice(0, clampedStart);
+        const after = String(inputVal).slice(clampedStart + 2);
+        const next = before + after;
+        onChange(id, field.name, next);
+        setCaret(clampedStart);
+        setTimeout(() => {
+            const el = textareaRef.current;
+            if (!el) return;
+            try { el.setSelectionRange(clampedStart, clampedStart); } catch { }
+        }, 0);
+    };
+
     const insertAtCaret = (text) => {
         const current = String(inputVal ?? '');
         const pos = caret ?? current.length;
@@ -209,6 +254,18 @@ export default function PromptPicker({ id, data, field, onChange }) {
         }
     };
 
+    const handlePickTextNode = (n) => {
+        // Remove the just-typed '{{' entirely, then connect Text -> LLM.prompt
+        removeDoubleBrace();
+        setShow(false);
+        setStep(1);
+        setSelectedNodeId(null);
+        setTriggerStart(null);
+        if (n) {
+            addConnection({ source: n.id, sourceHandle: `${n.id}-output`, target: id, targetHandle: `${id}-prompt` });
+        }
+    };
+
     const removeToken = (tok) => {
         const text = String(inputVal || '');
         // remove the token substring
@@ -228,8 +285,9 @@ export default function PromptPicker({ id, data, field, onChange }) {
         const el = chipRowRef.current;
         if (!el) { setChipPad(0); return; }
         const h = el.getBoundingClientRect().height;
-        setChipPad(tokens.length ? Math.ceil(h) + 6 : 0);
-    }, [tokens]);
+        const hasChips = tokens.length > 0 || connectedTextNodes.length > 0;
+        setChipPad(hasChips ? Math.ceil(h) + 6 : 0);
+    }, [tokens, connectedTextNodes]);
 
     return (
         <div style={{ position: 'relative', display: "flex", flexDirection: "column" }}>
@@ -241,12 +299,26 @@ export default function PromptPicker({ id, data, field, onChange }) {
                         <button className="token-chip__remove" onClick={() => removeToken(t)} title="Remove" style={{ fontSize: 9, padding: 2 }}>×</button>
                     </span>
                 ))}
+                {connectedTextNodes.map(({ node }, i) => (
+                    <span key={`textnode-${node.id}-${i}`} className="token-chip" style={{ padding: '1px', fontSize: 11, pointerEvents: 'auto' }}>
+                        <span className="token-chip__icon" style={{ width: 10, height: 10 }}>T</span>
+                        Text
+                        <button
+                            className="token-chip__remove"
+                            onClick={() => removeEdge({ source: node.id, sourceHandle: `${node.id}-output`, target: id, targetHandle: `${id}-prompt` })}
+                            title="Remove"
+                            style={{ fontSize: 9, padding: 2 }}
+                        >
+                            ×
+                        </button>
+                    </span>
+                ))}
             </div>
             <textarea
                 ref={textareaRef}
                 className={"node-card__input node-card__textarea"}
                 value={displayValue}
-                placeholder={tokens.length ? '' : field.placeholder}
+                placeholder={(tokens.length || hasPromptConnection) ? '' : field.placeholder}
                 rows={1}
                 onInput={autosize}
                 onClick={(e) => setCaret(e.target.selectionStart ?? 0)}
@@ -259,7 +331,7 @@ export default function PromptPicker({ id, data, field, onChange }) {
                     {step === 1 ? (
                         <div>
                             <div style={{ padding: '8px 10px', fontSize: 11, color: 'var(--color-muted)' }}>Step 1 • Nodes</div>
-                            <div style={{ maxHeight: 180, overflowY: 'auto' }}>
+                            <div style={{ maxHeight: 240, overflowY: 'auto' }}>
                                 {inputNodes.length === 0 ? (
                                     <div style={{ padding: 10, fontSize: 12, color: 'var(--color-muted)' }}>
                                         {(nodes || []).some((n) => n.type === 'customInput')
@@ -280,6 +352,23 @@ export default function PromptPicker({ id, data, field, onChange }) {
                                         }}>➜</span>
                                         <span>{n?.data?.inputName || 'input_1'}</span>
                                         <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--color-muted)' }}>{n?.data?.inputType || 'Text'}</span>
+                                    </button>
+                                ))}
+                                {/* Also list available Text nodes for direct connection */}
+                                {availableTextNodes.map((n) => (
+                                    <button
+                                        key={n.id}
+                                        onClick={() => handlePickTextNode(n)}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'left', padding: '8px 10px', cursor: 'pointer', background: 'transparent', border: 'none', fontSize: 12
+                                        }}
+                                    >
+                                        <span style={{
+                                            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, borderRadius: 4, background: '#dcfce7', color: '#166534', fontWeight: 700
+                                        }}>T</span>
+                                        <span title={(n?.data?.text || '').toString()} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 140 }}>
+                                            {(n?.data?.text || '').toString() || 'Text'}
+                                        </span>
                                     </button>
                                 ))}
                             </div>

@@ -1,6 +1,5 @@
 /* VectorShift style toolbar */
 .vs-toolbar {
-  width: 100%;
   padding: 10px 18px;
   background: transparent;
   /* allow rounded card look to sit on canvas */
@@ -15,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  width: 100%;
+  width: auto;
   background: #ffffff;
   border-radius: 12px;
   padding: 5px 5px;

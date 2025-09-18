@@ -1,0 +1,91 @@
+/* Themed custom Select component */
+.vs-select { position: relative; font-size: var(--text-xs); }
+.vs-select.is-disabled { opacity: 0.7; cursor: not-allowed; }
+
+.vs-select__control {
+  width: 100%;
+  text-align: left;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 8px 32px 8px 10px; /* base default; overridden when used inside node */
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  box-sizing: border-box;
+}
+
+/* When used inside node cards, match node input sizing exactly */
+.vs-select__control.node-card__input {
+  padding: 5px 28px 5px 9px; /* match .node-card__input + leave room for chevron */
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+}
+.vs-select__control:hover {
+  border-color: #bfdbfe; /* blue-200 */
+  box-shadow: 0 1px 0 rgba(2,6,23,0.02), 0 0 0 3px rgba(147,197,253,0.20);
+}
+.vs-select__control:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-strong);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.22);
+}
+
+/* Value text */
+.vs-select__value.is-placeholder { color: var(--color-muted); }
+
+/* Chevron */
+.vs-select__chevron {
+  position: absolute;
+  right: 8px; /* match native select chevron spacing */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="%231d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Menu */
+.vs-select__menu {
+  position: absolute;
+  z-index: 1000; /* above react-flow panels */
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  background: linear-gradient(180deg, #eef2ff 80%, #fff 100%);
+  border: 1px solid #c7d2fe; /* indigo-300 */
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.14);
+  padding: 4px;
+  max-height: 240px;
+  overflow: auto;
+  pointer-events: auto;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: var(--text-xs);
+}
+
+.vs-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 7px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+.vs-select__option.is-highlighted { background: #e0e7ff; /* indigo-100 */ }
+.vs-select__option.is-selected {
+  background: #dbeafe; /* blue-100 */
+  border: 1px solid #bfdbfe; /* blue-200 */
+}
+
+.vs-select__check {
+  width: 14px; height: 14px; /* keep icon proportional to compact menu */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="%231d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat; background-position: center;
+}

@@ -1,76 +1,128 @@
 /* Shared styles for custom React Flow nodes */
 
 .node-card {
-	width: 280px;
-	min-height: 120px;
+	width: 210px;
+	/* ~25% reduction from 280px */
+	height: auto;
 	/* border tuned to indigo family to match screenshot */
-	border: 1px solid #c7d2fe; /* indigo-300 */
+	border: 1px solid #c7d2fe;
+	/* indigo-300 */
 	/* slightly more rounded corners as in the reference */
-	border-radius: 16px;
+	border-radius: 5px;
 	/* soft indigo background like the image */
-	background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%); /* indigo-50 -> indigo-100 */
+	background: linear-gradient(180deg, #eef2ff 90%);
+	/* indigo-50 -> indigo-100 */
 	color: var(--color-text);
-	padding: var(--space-4) var(--space-4) var(--space-4);
+	padding: var(--space-2) var(--space-2) var(--space-2);
 	box-shadow: 0 4px 12px rgba(2, 6, 23, 0.1);
 	position: relative;
 	/* smooth hover animation */
 	transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+	font-size: var(--text-xs);
+	/* make inner text smaller by default */
 }
 
 .node-card__header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: var(--space-3);
-	margin-bottom: var(--space-3);
+	gap: var(--space-1);
+	margin-bottom: var(--space-1);
 }
-.node-card__header-left { display:flex; align-items:center; gap:8px; }
-.node-card__icon { filter: grayscale(10%); }
+
+.node-card__header-left {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.node-card__icon {
+	filter: grayscale(10%);
+}
+
 .node-card__title {
-	font-size: var(--text-md);
+	font-size: var(--text-xs);
 	font-weight: 700;
 	color: var(--color-accent);
 }
+
 .node-card__run {
-	font-size: var(--text-xs);
-	padding: 4px 8px;
+	font-size: xx-small;
+	padding: 2px 6px;
 	border-radius: 999px;
 	border: 1px solid var(--color-border);
-	background: linear-gradient(180deg, rgba(191,219,254,0.8), rgba(147,197,253,0.6));
+	background: linear-gradient(180deg, rgba(191, 219, 254, 0.8), rgba(147, 197, 253, 0.6));
 	color: var(--color-text);
 }
-.node-card__run:hover { border-color: var(--color-accent-strong); }
+
+.node-card__run:hover {
+	border-color: var(--color-accent-strong);
+}
+
+/* Delete (×) button in header */
+.node-card__delete {
+	font-size: 12px;
+	line-height: 1;
+	padding: 2px 6px;
+	border-radius: 999px;
+	border: 1px solid var(--color-border);
+	background: linear-gradient(180deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.6));
+	color: var(--color-muted);
+	cursor: pointer;
+}
+
+.node-card__delete:hover {
+	border-color: var(--color-danger);
+	color: var(--color-danger);
+	background: linear-gradient(180deg, rgba(254, 226, 226, 0.6), rgba(254, 202, 202, 0.4));
+}
 
 .node-card__field-label {
 	display: block;
-	font-size: var(--text-xs);
-	margin-top: var(--space-3);
-	margin-bottom: var(--space-2);
+	font-size: smaller;
+	margin-top: var(--space-1);
+	margin-bottom: var(--space-1);
 	color: var(--color-muted);
 }
 
 .node-card__desc {
-	font-size: var(--text-xs);
+	font-size: x-small;
 	color: var(--color-muted);
-	margin-top: -6px;
-	margin-bottom: var(--space-2);
+	margin-top: -4px;
+	margin-bottom: var(--space-1);
+	display: -webkit-box;
+	line-clamp: 1;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-.node-card__field { margin-bottom: var(--space-2); }
-.node-card__field-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.node-card__field {
+	margin-bottom: var(--space-1);
+}
+
+.node-card__field-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 4px;
+}
+
 .node-card__badge {
-	font-size: 10px;
+	font-size: 9px;
 	padding: 2px 6px;
 	border-radius: 999px;
 	border: 1px solid var(--color-border);
-	background: rgba(191,219,254,0.6);
+	background: rgba(191, 219, 254, 0.6);
 	color: var(--color-accent-strong);
 }
 
 .node-card__input {
 	width: 100%;
 	box-sizing: border-box;
-	padding: 8px 10px;
+	padding: 5px 7px;
+	font-size: x-small;
 	border-radius: var(--radius-sm);
 	border: 1px solid var(--color-border);
 	background: var(--color-surface);
@@ -78,27 +130,88 @@
 	outline: none;
 	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
 .node-card__input:focus {
 	border-color: var(--color-accent-strong);
-	box-shadow: 0 0 0 3px rgba(96,165,250,0.2);
+	box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
 /* Custom select appearance to mimic dropdown chip and menu */
+/* Themed dropdown (native select) */
 .node-card__select {
+	/* reset native arrows */
+	-webkit-appearance: none;
+	-moz-appearance: none;
 	appearance: none;
-	background-image: url('data:image/svg+xml;utf8,<svg fill="%231d4ed8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.5 7.5l4.5 4.5 4.5-4.5"/></svg>');
+
+	/* layout */
+	padding: 5px 20px 5px 7px;
+	/* further compact */
+	border-radius: var(--radius-md);
+	border: 1px solid var(--color-border);
+	cursor: pointer;
+	font-size: x-small;
+	background:
+		linear-gradient(180deg, rgba(191, 219, 254, 0.22), rgba(191, 219, 254, 0.12));
+	/* subtle indigo tint */
+	color: var(--color-text);
+	transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 120ms ease;
+
+	/* custom chevron */
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="%231d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 	background-repeat: no-repeat;
-	background-position: right 10px center;
+	background-position: right 8px center;
 	background-size: 14px 14px;
 }
 
+.node-card__select:hover {
+	border-color: #bfdbfe;
+	/* blue-200 */
+	box-shadow: 0 1px 0 rgba(2, 6, 23, 0.02), 0 0 0 3px rgba(147, 197, 253, 0.20);
+}
+
+.node-card__select:focus {
+	outline: none;
+	border-color: var(--color-accent-strong);
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22);
+	background: linear-gradient(180deg, rgba(191, 219, 254, 0.28), rgba(191, 219, 254, 0.16));
+}
+
+.node-card__select:active {
+	transform: translateY(0.5px);
+}
+
+/* Hide legacy IE arrow if present */
+.node-card__select::-ms-expand {
+	display: none;
+}
+
 /* Some browsers allow styling options slightly; keep minimal */
-.node-card__select option { padding: 6px; }
+/* Option styling (limited by browsers, but safe defaults) */
+.node-card__select option {
+	padding: 6px 8px;
+	color: var(--color-text);
+}
+
+.node-card__select option:checked {
+	background-color: #dbeafe;
+}
+
+.node-card__select option:hover {
+	background-color: #eef2ff;
+}
+
+/* Disabled state */
+.node-card__select:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+	background: linear-gradient(180deg, rgba(191, 219, 254, 0.10), rgba(191, 219, 254, 0.06));
+}
 
 /* React Flow handle tweaks: smaller dots like VectorShift */
 .react-flow__handle {
-	width: 10px;
-	height: 10px;
+	width: 8px;
+	height: 8px;
 	background: var(--color-accent-strong);
 	border: 2px solid #ffffff;
 }
@@ -106,23 +219,28 @@
 /* Hover, focus, and selected states to mimic the card lift effect */
 .node-card:hover,
 .react-flow__node:hover .node-card {
-	transform: translateY(-3px);
+	transform: translateY(-1px);
 	box-shadow: 0 12px 28px rgba(2, 6, 23, 0.14);
-	border: 1px solid #a5b4fc; /* indigo-300/400 */
+	border: 1px solid #a5b4fc;
+	/* indigo-300/400 */
 }
 
 .node-card:focus-within,
 .react-flow__node:focus-within .node-card {
-	transform: translateY(-2px);
-	box-shadow: 0 10px 24px rgba(2, 6, 23, 0.12), 0 0 0 3px rgba(59,130,246,0.18);
-	border: 1px solid #93c5fd; /* blue-300 ring hint */
+	transform: translateY(-1px);
+	box-shadow: 0 10px 24px rgba(2, 6, 23, 0.12), 0 0 0 3px rgba(59, 130, 246, 0.18);
+	border: 1px solid #93c5fd;
+	/* blue-300 ring hint */
 }
 
 /* When a React Flow node is selected, polish the outline */
 .react-flow__node.selected .node-card {
-	box-shadow: 0 14px 32px rgba(2, 6, 23, 0.16), 0 0 0 3px rgba(37,99,235,0.25);
-	border: 1px solid #60a5fa; /* blue-400 */
+	box-shadow: 0 14px 32px rgba(2, 6, 23, 0.16), 0 0 0 3px rgba(37, 99, 235, 0.25);
+	border: 1px solid #60a5fa;
+	/* blue-400 */
 }
 
 /* Ensure hovered node stacks above neighbors so the lift isn't clipped */
-.react-flow__node:hover { z-index: 10; }
+.react-flow__node:hover {
+	z-index: 10;
+}

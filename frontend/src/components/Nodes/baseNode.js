@@ -14,10 +14,12 @@ import React, { useMemo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { useStore } from '../../store/store';
 import './node-styles/nodes-common.css';
+import Select from '../UI/Select';
 
 function useStoreActions() {
   const updateNodeField = useStore((s) => s.updateNodeField);
-  return { updateNodeField };
+  const removeNode = useStore((s) => s.removeNode);
+  return { updateNodeField, removeNode };
 }
 
 function FieldControl({ id, data, field, onChange }) {
@@ -37,15 +39,13 @@ function FieldControl({ id, data, field, onChange }) {
   }
   if (field.type === 'select') {
     return (
-      <select
-        className="node-card__input node-card__select"
+      <Select
+        className="node-card__input" /* keep spacing/look consistent with inputs */
         value={value}
-        onChange={(e) => onChange(id, field.name, e.target.value)}
-      >
-        {(field.options || []).map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
-      </select>
+        options={field.options || []}
+        onChange={(val) => onChange(id, field.name, val)}
+        placeholder={field.placeholder || 'Select…'}
+      />
     );
   }
   if (field.type === 'toggle') {
@@ -63,7 +63,7 @@ function FieldControl({ id, data, field, onChange }) {
 
 export function makeNode(config) {
   const NodeComponent = function GenericNode({ id, data }) {
-    const { updateNodeField } = useStoreActions();
+    const { updateNodeField, removeNode } = useStoreActions();
 
     // evenly distribute handles
     const inputPositions = useMemo(() => {
@@ -82,10 +82,8 @@ export function makeNode(config) {
       updateNodeField(nodeId, fieldName, fieldValue);
     };
 
-    const handleRun = () => {
-      // Placeholder: hook into a pipeline run per node if available later
-      // For now this is a no-op visual affordance
-      // console.log('Run node', id);
+    const handleDelete = () => {
+      removeNode(id);
     };
 
     return (
@@ -117,7 +115,7 @@ export function makeNode(config) {
             ) : null}
             <div className="node-card__title">{config.title || config.type}</div>
           </div>
-          <button className="node-card__run" onClick={handleRun} title="Run node">Run</button>
+          <button className="node-card__delete" onClick={handleDelete} title="Delete node" aria-label="Delete node">×</button>
         </div>
 
         {config.description ? (

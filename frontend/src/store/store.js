@@ -128,6 +128,14 @@ export const useStore = create(
                   }
                   return n;
                 }
+                if (n.type === 'customOutput') {
+                  const out = n.data.output;
+                  if (typeof out === 'string') {
+                    const newOut = out.replace(tokenRegex, '');
+                    if (newOut !== out) return { ...n, data: { ...n.data, output: newOut } };
+                  }
+                  return n;
+                }
                 return n;
               });
           } else {
@@ -187,6 +195,14 @@ export const useStore = create(
                 }
                 return n;
               }
+              if (n.type === 'customOutput') {
+                const out = n.data.output;
+                if (typeof out === 'string') {
+                  const newOut = out.replace(re, replaceWith);
+                  if (newOut !== out) return { ...n, data: { ...n.data, output: newOut } };
+                }
+                return n;
+              }
               return n;
             });
 
@@ -243,6 +259,14 @@ export const useStore = create(
                 if (typeof txt === 'string') {
                   const newText = txt.replace(re, replaceWith);
                   if (newText !== txt) return { ...n, data: { ...n.data, text: newText } };
+                }
+                return n;
+              }
+              if (n.type === 'customOutput') {
+                const out = n.data.output;
+                if (typeof out === 'string') {
+                  const newOut = out.replace(re, replaceWith);
+                  if (newOut !== out) return { ...n, data: { ...n.data, output: newOut } };
                 }
                 return n;
               }

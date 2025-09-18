@@ -192,13 +192,13 @@ export default function TextPicker({ id, data, field, onChange }) {
     };
 
     return (
-        <div style={{ position: 'relative' }}>
-            <div ref={chipRowRef} style={{ position: 'absolute', top: 4, left: 8, right: 8, display: 'flex', flexWrap: 'wrap', gap: 6, pointerEvents: 'none' }}>
+        <div style={{ position: 'relative', display: "flex", flexDirection: "column" }}>
+            <div ref={chipRowRef} style={{ position: 'absolute', top: 4, left: 8, right: 8, display: 'flex', flexWrap: 'wrap', gap: 6, pointerEvents: 'none', fontSize: 'xx-small' }}>
                 {tokens.map((t, i) => (
-                    <span key={`${t.name}.${t.type}.${i}`} className="token-chip" style={{ padding: '2px 6px', fontSize: 11, pointerEvents: 'auto' }}>
-                        <span className="token-chip__icon" style={{ width: 12, height: 12 }}>➜</span>
+                    <span key={`${t.name}.${t.type}.${i}`} className="token-chip" style={{ padding: '1px', fontSize: 11, pointerEvents: 'auto' }}>
+                        <span className="token-chip__icon" style={{ width: 10, height: 10 }}>➜</span>
                         {t.name}.{t.type}
-                        <button className="token-chip__remove" onClick={() => removeToken(t)} title="Remove" style={{ fontSize: 12 }}>×</button>
+                        <button className="token-chip__remove" onClick={() => removeToken(t)} title="Remove" style={{ fontSize: 9, padding: 2 }}>×</button>
                     </span>
                 ))}
             </div>
